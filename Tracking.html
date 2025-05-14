@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vehicle Tracking (Live Map) | MOTOMATRIX</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f7f9fb;
+    }
+
+    header {
+      background-color: #000;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 1rem;
+    }
+
+    h2 {
+      text-align: center;
+      margin: 1rem 0;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input, button {
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: #0b5394;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #map {
+      height: 500px;
+      margin: 2rem 0;
+      border-radius: 8px;
+      border: 2px solid #ccc;
+    }
+
+    .vehicle-list {
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .vehicle-item {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <script type="module" src="auth-check.js"></script>
+   <!-- HEADER + NAVBAR -->
+   <header class="top-header">
+    <div class="logo">
+        <a href="index.html">
+          <img src="images/img2.png" alt="Fleet Management" class="logo-img" />
+        </a>
+      </div>
+      
+      
+      
+    <nav class="navbar">
+      <a href="index.html">Home</a>
+      <div class="dropdown">
+        <button class="dropbtn">Features</button>
+        <div class="dropdown-content">
+          <a href="maintenance.html">Maintenance Scheduling</a>
+          <a href="route-optimization.html">Route Optimization</a>
+          <a href="analytics.html">Reports and Analytics</a>
+          <a href="fuel.html">Fuel Management System</a>
+        
+          <a href="emergency.html">Emergency Response System</a>
+        </div>
+      </div>
+      
+      <a href="Tracking.html">Tracking</a>
+      <a href="Drivers.html">Drivers</a>
+      <a href="Contact.html">Contact</a>
+      <a href="signout.html" class="nav-btn">Sign out</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>Add Vehicle</h2>
+    <form id="vehicleForm">
+      <input type="text" id="make" placeholder="Make" required />
+      <input type="text" id="model" placeholder="Model" required />
+      <input type="text" id="license" placeholder="License Plate" required />
+      <input type="number" id="mileage" placeholder="Initial Mileage" required />
+      <button type="submit">Add Vehicle</button>
+    </form>
+
+    <h2>Live Map View</h2>
+    <div id="map"></div>
+
+    <div class="vehicle-list">
+      <h2>Vehicle List</h2>
+      <div id="vehicleData"></div>
+    </div>
+  </div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-content">
+    <div>
+      <h2>MOTOMATRIX</h2>
+      <p>Efficient fleet management for smart logistics.</p>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <ul>
+        <li>Home</li>
+        <li>Features</li>
+        <li>About</li>
+        <li>Contact</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Support</h4>
+      <ul>
+        <li>Help Center</li>
+        <li>FAQs</li>
+        <li>Report Issue</li>
+      </ul>
+    </div>
+    <div class="footer-actions">
+      <h4>Stay Connected</h4>
+      <a href="#">Twitter</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">Instagra
+        
+      </a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2025 MOTOMATRIX. All rights reserved.
+  </div>
+</footer>
+
+
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const form = document.getElementById('vehicleForm');
+    const vehicleData = document.getElementById('vehicleData');
+    let vehicleCount = 0;
+  
+    // Initialize Leaflet map
+    const map = L.map('map').setView([20.5937, 78.9629], 5); // Centered on India
+  
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+    }).addTo(map);
+  
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+  
+      const make = document.getElementById('make').value;
+      const model = document.getElementById('model').value;
+      const license = document.getElementById('license').value;
+      const mileage = document.getElementById('mileage').value;
+  
+      const vehicleId = `Vehicle-${vehicleCount++}`;
+  
+      // Add to vehicle list
+      const info = document.createElement('div');
+      info.classList.add('vehicle-item');
+      info.innerText = `${vehicleId}: ${make} ${model}, License: ${license}, Mileage: ${mileage} km`;
+      vehicleData.appendChild(info);
+  
+      // Place a draggable marker on the map (randomized start position)
+      const lat = 20 + Math.random();  // Simulated location
+      const lng = 78 + Math.random();
+      const marker = L.marker([lat, lng], {
+        draggable: true
+      }).addTo(map);
+  
+      marker.bindPopup(`<b>${vehicleId}</b><br>${make} ${model}<br>${license}`).openPopup();
+  
+      form.reset();
+    });
+  </script>
+  
+ 
+</body>
+</html>

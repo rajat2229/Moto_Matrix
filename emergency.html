@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Emergency Response | MOTOMATRIX</title>
+
+  <!-- External Stylesheets -->
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    body {
+      background-color: #f1f5f9;
+      font-family: 'Poppins', sans-serif;
+      color: #111827;
+    }
+
+    .page-header {
+      background-image: url('https://images.unsplash.com/photo-1581093588401-8e82c1f83db8?auto=format&fit=crop&w=1470&q=80');
+      background-size: cover;
+      background-position: center;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .page-header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: white;
+    }
+
+    .page-header h1 {
+      position: relative;
+      color: black;
+      font-size: 2.8rem;
+      z-index: 1;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+
+    .box img {
+      width: 100px;
+      margin-bottom: 10px;
+    }
+
+    .box h2 {
+      font-size: 1.8rem;
+      color: #dc2626;
+      margin-bottom: 15px;
+    }
+
+    .box p {
+      color: #374151;
+      font-size: 1.05rem;
+      margin-bottom: 25px;
+    }
+
+    .panic-button {
+      background-color: #dc2626;
+      color: white;
+      padding: 14px 28px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .panic-button:hover {
+      background-color: #b91c1c;
+    }
+
+    .alert-box {
+      display: none;
+      background-color: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    #map {
+      height: 400px;
+      width: 100%;
+      border-radius: 12px;
+      margin-top: 20px;
+    }
+
+    footer {
+      text-align: center;
+      background-color: #111827;
+      color: white;
+      padding: 20px;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .page-header h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <script type="module" src="auth-check.js"></script>
+
+  <!-- TOP NAVBAR + LOGO -->
+  <header class="top-header">
+    <div class="logo">
+      <a href="index.html">
+        <img src="images/img2.png" alt="Fleet Management" class="logo-img" />
+      </a>
+    </div>
+    
+    <nav class="navbar">
+      <a href="index.html">Home</a>
+      <div class="dropdown">
+        <button class="dropbtn">Features</button>
+        <div class="dropdown-content">
+          <a href="maintenance.html">Maintenance Scheduling</a>
+          <a href="route-optimization.html">Route Optimization</a>
+          <a href="analytics.html">Reports and Analytics</a>
+          <a href="fuel.html">Fuel Management System</a>
+        
+          <a href="emergency.html">Emergency Response System</a>
+        </div>
+      </div>
+      <a href="Tracking.html">Tracking</a>
+      <a href="Drivers.html">Drivers</a>
+      <a href="Contact.html">Contact</a>
+      <a href="signout.html" class="nav-btn">Sign out</a>
+    </nav>
+  </header>
+
+  <!-- PAGE HERO BANNER -->
+  <div class="page-header">
+    <h1>Emergency Response </h1>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="container">
+
+    <!-- Panic Section -->
+    <div class="box">
+      <img src="https://cdn-icons-png.flaticon.com/512/1484/1484820.png" alt="Emergency Icon" />
+      <h2>Trigger Emergency Alert</h2>
+      <p>Click the button below to simulate an emergency situation. Your location and a distress signal will be sent to fleet management for immediate action.</p>
+      <button class="panic-button" onclick="triggerEmergency()">🚨 Panic Button</button>
+      <div class="alert-box" id="alertBox">
+        <h3>🚨 Emergency Alert Triggered!</h3>
+        <p><strong>Location:</strong> <span id="locationText"></span></p>
+        <p><strong>Note:</strong> Immediate assistance requested by the driver.</p>
+      </div>
+    </div>
+
+    <!-- Map Section -->
+    <div class="box">
+      <h2>Driver Location</h2>
+      <div id="map"></div>
+    </div>
+
+  </div>
+
+ <!-- FOOTER -->
+ <footer class="footer">
+  <div class="footer-content">
+    <div>
+      <h2>MOTOMATRIX</h2>
+      <p>Efficient fleet management for smart logistics.</p>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <ul>
+        <li>Home</li>
+        <li>Features</li>
+        <li>About</li>
+        <li>Contact</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Support</h4>
+      <ul>
+        <li>Help Center</li>
+        <li>FAQs</li>
+        <li>Report Issue</li>
+      </ul>
+    </div>
+    <div class="footer-actions">
+      <h4>Stay Connected</h4>
+      <a href="#">Twitter</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">Instagram</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2025 MOTOMATRIX. All rights reserved.
+  </div>
+</footer>
+
+
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    let map = L.map('map').setView([28.6139, 77.2090], 13); // Default: Delhi
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    let marker = L.marker([28.6139, 77.2090]).addTo(map)
+      .bindPopup('Driver Current Location')
+      .openPopup();
+
+    function triggerEmergency() {
+      const alertBox = document.getElementById("alertBox");
+      const locationText = document.getElementById("locationText");
+
+      navigator.geolocation.getCurrentPosition(position => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        marker.setLatLng([lat, lon]).bindPopup('Emergency Location').openPopup();
+        map.setView([lat, lon], 14);
+
+        locationText.innerText = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;;
+        alertBox.style.display = 'block';
+      }, () => {
+        locationText.innerText = 'Unable to retrieve location.';
+        alertBox.style.display = 'block';
+      });
+    }
+  </script>
+
+</body>
+</html>

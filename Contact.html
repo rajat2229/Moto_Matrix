@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us - MOTOMATRIX</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f9f9f9;
+      color: #222;
+    }
+
+    header {
+      background: #111;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 40px;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: 500;
+    }
+
+    .nav-btn {
+      background-color: #1a1aff;
+      padding: 8px 15px;
+      border-radius: 5px;
+      color: white;
+    }
+
+    .contact-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      padding: 60px 10%;
+      align-items: center;
+      background-color: white;
+    }
+
+    .contact-image img {
+      width: 70%;
+      
+      border-radius: 2px;
+     
+    }
+
+    .contact-form {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .contact-form h1 {
+      margin-bottom: 10px;
+      font-size: 2rem;
+      color: #111;
+    }
+
+    .contact-form p {
+      color: #555;
+      margin-bottom: 25px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    form input,
+    form select,
+    form textarea {
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    form button {
+      width: fit-content;
+      padding: 10px 20px;
+      background-color: #0b5394;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    form button:hover {
+      background-color: #0b5394;
+    }
+
+    
+
+    
+
+    @media (max-width: 768px) {
+      .contact-wrapper {
+        grid-template-columns: 1fr;
+        padding: 30px 5%;
+      }
+
+      .contact-image {
+        order: 2;
+        margin-top: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<script type="module" src="auth-check.js"></script>
+
+<!-- HEADER -->
+<header class="top-header">
+  <div class="logo">
+    <a href="index.html">
+      <img src="images/img2.png" alt="Fleet Management" class="logo-img" />
+    </a>
+  </div>
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <div class="dropdown">
+      <button class="dropbtn">Features</button>
+      <div class="dropdown-content">
+        <a href="maintenance.html">Maintenance Scheduling</a>
+        <a href="route-optimization.html">Route Optimization</a>
+        <a href="analytics.html">Reports and Analytics</a>
+        <a href="fuel.html">Fuel Management System</a>
+        
+        <a href="emergency.html">Emergency Response System</a>
+      </div>
+    </div>
+    <a href="Tracking.html">Tracking</a>
+    <a href="Drivers.html">Drivers</a>
+    <a href="Contact.html">Contact</a>
+    <a href="signout.html" class="nav-btn">Sign out</a>
+  </nav>
+</header>
+
+<!-- CONTACT SECTION -->
+<section class="contact-wrapper">
+  <div class="contact-image">
+    <img src="images/img8.jpg" alt="Fleet Management">
+  </div>
+  <div class="contact-form">
+    <h1>Contact Us</h1>
+    <p>Need help? Have a question about your fleet? Get in touch!</p>
+    <form onsubmit="submitForm(event)">
+      <input type="text" placeholder="First Name" required />
+      <input type="text" placeholder="Last Name" required />
+      <input type="text" placeholder="Company Name" />
+      <input type="tel" placeholder="Phone Number" />
+      <input type="email" placeholder="Email Address" required />
+      <select required>
+        <option disabled selected value="">How can we help?</option>
+        <option>Sales Inquiry</option>
+        <option>Support Request</option>
+        <option>General Question</option>
+      </select>
+      <textarea placeholder="Message" rows="5" required></textarea>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</section>
+
+
+
+
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-content">
+    <div>
+      <h2>MOTOMATRIX</h2>
+      <p>Efficient fleet management for smart logistics.</p>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <ul>
+        <li>Home</li>
+        <li>Features</li>
+        <li>About</li>
+        <li>Contact</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Support</h4>
+      <ul>
+        <li>Help Center</li>
+        <li>FAQs</li>
+        <li>Report Issue</li>
+      </ul>
+    </div>
+    <div class="footer-actions">
+      <h4>Stay Connected</h4>
+      <a href="#">Twitter</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">Instagram</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2025 MOTOMATRIX. All rights reserved.
+  </div>
+</footer>
+
+
+
+<!-- Script -->
+<script>
+  function submitForm(e) {
+    e.preventDefault();
+    alert("Thank you! We’ve received your message and will respond soon.");
+  }
+</script>
+
+</body>
+</html>

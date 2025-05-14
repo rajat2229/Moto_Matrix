@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css" />
+  <title>Fuel Management System</title>
+  <style>
+    :root {
+      --primary: #0b5394;
+      --accent: #f5f7fa;
+      --light: #ffffff;
+      --success: #d4edda;
+      --error: #f8d7da;
+      --text-dark: #333;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--accent);
+      color: var(--text-dark);
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 30px;
+      background: var(--light);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      min-height: calc(100vh - 100px);
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 30px;
+    }
+
+    section {
+      margin-bottom: 40px;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+      color: #2d3e50;
+    }
+
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    input {
+      flex: 1 1 240px;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      transition: 0.2s ease;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      outline: none;
+    }
+
+    button {
+      padding: 8px 20px;
+      font-size: 14px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #0a4b85;
+    }
+
+    #reportOutput {
+      background: #f0f4f8;
+      padding: 20px;
+      border-radius: 8px;
+      min-height: 80px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      margin-top: 10px;
+    }
+
+    .success {
+      background: var(--success);
+      color: #155724;
+    }
+
+    .error {
+      background: var(--error);
+      color: #721c24;
+    }
+
+    @media (max-width: 600px) {
+      input {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <script type="module" src="auth-check.js"></script>
+
+  <!-- HEADER + NAVBAR -->
+  <header class="top-header">
+    <div class="logo">
+      <a href="index.html">
+        <img src="images/img2.png" alt="Fleet Management" class="logo-img" />
+      </a>
+    </div>
+
+    <nav class="navbar">
+      <a href="#">Home</a>
+      <div class="dropdown">
+        <button class="dropbtn">Features</button>
+        <div class="dropdown-content">
+          <a href="maintenance.html">Maintenance Scheduling</a>
+          <a href="route-optimization.html">Route Optimization</a>
+          <a href="analytics.html">Reports and Analytics</a>
+          <a href="fuel.html">Fuel Management System</a>
+         
+          <a href="emergency.html">Emergency Response System</a>
+        </div>
+      </div>
+      <a href="Tracking.html">Tracking</a>
+      <a href="Drivers.html">Drivers</a>
+      <a href="Contact.html">Contact</a>
+      <a href="signout.html" class="nav-btn">Sign out</a>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <div class="container">
+    <h1>🚗 Fuel Management</h1>
+
+    <section>
+      <h2>🔧 Register Vehicle</h2>
+      <form id="vehicleForm">
+        <input type="text" id="vehicleId" placeholder="Vehicle ID" required />
+        <input type="number" id="initialMileage" placeholder="Initial Mileage (miles)" required />
+        <input type="number" id="fuelEfficiency" placeholder="Fuel Efficiency (MPG)" required />
+        <button type="submit">Register Vehicle</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>📋 Log Trip</h2>
+      <form id="tripForm">
+        <input type="text" id="tripVehicleId" placeholder="Vehicle ID" required />
+        <input type="number" id="distanceTravelled" placeholder="Distance Travelled (miles)" required />
+        <input type="number" id="fuelUsed" placeholder="Fuel Used (gallons)" required />
+        <button type="submit">Log Trip</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>📊 Report</h2>
+      <div id="reportOutput">No data yet. Log a trip to see report.</div>
+    </section>
+  </div>
+
+  <script>
+    const vehicles = {};
+
+    document.getElementById('vehicleForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id = document.getElementById('vehicleId').value.trim();
+      const mileage = parseFloat(document.getElementById('initialMileage').value);
+      const efficiency = parseFloat(document.getElementById('fuelEfficiency').value);
+
+      vehicles[id] = {
+        initialMileage: mileage,
+        fuelEfficiency: efficiency
+      };
+
+      alert(`✅ Vehicle ${id} registered successfully.`);
+      e.target.reset();
+    });
+
+    document.getElementById('tripForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id = document.getElementById('tripVehicleId').value.trim();
+      const distance = parseFloat(document.getElementById('distanceTravelled').value);
+      const fuelUsed = parseFloat(document.getElementById('fuelUsed').value);
+
+      const vehicle = vehicles[id];
+
+      if (!vehicle) {
+        alert('❌ Vehicle not found. Please register first.');
+        return;
+      }
+
+      const expectedFuel = distance / vehicle.fuelEfficiency;
+      const efficiencyRatio = fuelUsed / expectedFuel;
+      const isInefficient = efficiencyRatio > 1.1;
+
+      let result = `
+        <p><strong>Vehicle ID:</strong> ${id}</p>
+        <p><strong>Distance Travelled:</strong> ${distance} miles</p>
+        <p><strong>Fuel Used:</strong> ${fuelUsed} gallons</p>
+        <p><strong>Expected Fuel Usage:</strong> ${expectedFuel.toFixed(2)} gallons</p>
+      `;
+
+      if (isInefficient) {
+        result += `
+          <div class="badge error">⚠️ Inefficiency Detected!</div>
+          <p><em>Recommendation:</em> Check tire pressure, air filters, and schedule an engine tune-up.</p>
+        `;
+      } else {
+        result += `<div class="badge success">✅ Fuel usage is efficient!</div>`;
+      }
+
+      document.getElementById('reportOutput').innerHTML = result;
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>

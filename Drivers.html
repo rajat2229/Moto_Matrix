@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Driver Management - MOTOMATRIX</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      background: #f4f7fa;
+      color: #333;
+    }
+    header {
+      background: #111;
+      color: #fff;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .add-driver {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      margin-bottom: 40px;
+    }
+    .add-driver h2 {
+      margin-bottom: 20px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .form-grid input, .form-grid button {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      width: 100%;
+    }
+    .form-grid button {
+      background: #0b5394;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      grid-column: span 2;
+      transition: 0.3s;
+    }
+    .form-grid button:hover {
+      background: #0b5394;
+    }
+    .driver-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+    }
+    .driver-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+    }
+    .driver-avatar {
+      font-size: 40px;
+      color: #0b5394;
+    }
+    .driver-card h3 {
+      font-size: 20px;
+    }
+    .driver-card p {
+      font-size: 14px;
+      color: #666;
+    }
+    .driver-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+    .driver-actions button {
+      background: #eee;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .driver-actions .edit { color: #0b5394; }
+    .driver-actions .delete { color: #dc2626; }
+  </style>
+</head>
+<body>
+<script type="module" src="auth-check.js"></script>
+
+<header class="top-header">
+  <div class="logo">
+    <a href="index.html">
+      <img src="images/img2.png" alt="Fleet Management" class="logo-img" />
+    </a>
+  </div>
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <div class="dropdown">
+      <button class="dropbtn">Features</button>
+      <div class="dropdown-content">
+        <a href="maintenance.html">Maintenance Scheduling</a>
+        <a href="route-optimization.html">Route Optimization</a>
+        <a href="analytics.html">Reports and Analytics</a>
+        <a href="fuel.html">Fuel Management System</a>
+       
+        <a href="emergency.html">Emergency Response System</a>
+      </div>
+    </div>
+    <a href="Tracking.html">Tracking</a>
+    <a href="Drivers.html">Drivers</a>
+    <a href="Contact.html">Contact</a>
+    <a href="signout.html" class="nav-btn">Sign out</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="add-driver">
+    <h2>Add New Driver</h2>
+    <div class="form-grid">
+      <input type="text" id="name" placeholder="Driver Name" required />
+      <input type="text" id="phone" placeholder="Phone Number" required />
+      <input type="email" id="email" placeholder="Email Address" />
+      <input type="text" id="license" placeholder="License Number" />
+      <button onclick="addDriver()">Add Driver</button>
+    </div>
+  </div>
+
+  <div class="driver-list" id="driverList"></div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBx1k6F_ERnx4vYrr5IgmpCLpuSDILvOJU",
+    authDomain: "motomatrix16.firebaseapp.com",
+    databaseURL: "https://motomatrix16-default-rtdb.firebaseio.com",
+    projectId: "motomatrix16",
+    storageBucket: "motomatrix16.appspot.com",
+    messagingSenderId: "342300897944",
+    appId: "1:342300897944:web:0f9b5ea041dc63474cd6ed"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const driverRef = db.ref("drivers");
+
+  const driverList = document.getElementById("driverList");
+
+  function addDriver() {
+    const name = document.getElementById('name').value;
+    const phone = document.getElementById('phone').value;
+    const email = document.getElementById('email').value;
+    const license = document.getElementById('license').value;
+
+    if (!name || !phone) {
+      alert("Please fill in required fields.");
+      return;
+    }
+
+    const newDriver = {
+      name, phone, email, license
+    };
+
+    driverRef.push(newDriver);
+
+    document.getElementById('name').value = '';
+    document.getElementById('phone').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('license').value = '';
+  }
+
+  function renderDriver(id, data) {
+    const card = document.createElement("div");
+    card.className = "driver-card";
+    card.innerHTML = `
+      <div class="driver-avatar"><i class="fas fa-user-circle"></i></div>
+      <h3 contenteditable="false">${data.name}</h3>
+      <p><strong>Phone:</strong> <span contenteditable="false">${data.phone}</span></p>
+      <p><strong>Email:</strong> <span contenteditable="false">${data.email || 'N/A'}</span></p>
+      <p><strong>License:</strong> <span contenteditable="false">${data.license || 'N/A'}</span></p>
+      <div class="driver-actions">
+        <button class="edit" onclick="editDriver(this, '${id}')"><i class="fas fa-edit"></i></button>
+        <button class="delete" onclick="deleteDriver('${id}')"><i class="fas fa-trash-alt"></i></button>
+      </div>
+    `;
+    driverList.appendChild(card);
+  }
+
+  function deleteDriver(id) {
+    if (confirm("Are you sure you want to delete this driver?")) {
+      driverRef.child(id).remove();
+      driverList.innerHTML = "";
+    }
+  }
+
+  function editDriver(button, id) {
+    const card = button.closest(".driver-card");
+    const editableElements = card.querySelectorAll("[contenteditable]");
+    const isEditing = button.dataset.editing === "true";
+
+    if (isEditing) {
+      // Save
+      const [nameEl, phoneEl, emailEl, licenseEl] = editableElements;
+      const updatedData = {
+        name: nameEl.textContent,
+        phone: phoneEl.textContent,
+        email: emailEl.textContent,
+        license: licenseEl.textContent
+      };
+      driverRef.child(id).update(updatedData);
+      editableElements.forEach(el => el.setAttribute("contenteditable", "false"));
+      button.innerHTML = '<i class="fas fa-edit"></i>';
+      button.dataset.editing = "false";
+    } else {
+      // Enable edit
+      editableElements.forEach(el => el.setAttribute("contenteditable", "true"));
+      editableElements[0].focus();
+      button.innerHTML = '<i class="fas fa-save"></i>';
+      button.dataset.editing = "true";
+    }
+  }
+
+  driverRef.on("child_added", (snapshot) => {
+    renderDriver(snapshot.key, snapshot.val());
+  });
+
+  driverRef.on("child_removed", () => {
+    driverList.innerHTML = "";
+    driverRef.once("value", (snapshot) => {
+      snapshot.forEach(child => renderDriver(child.key, child.val()));
+    });
+  });
+</script>
+</body>
+</html>

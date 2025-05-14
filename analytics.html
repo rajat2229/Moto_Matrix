@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Maintenance Scheduling - MOTOMATRIX</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7fc;
+      margin: 0;
+      padding: 0;
+      color: #4a4a4a;
+      overflow-x: hidden;
+    }
+
+    header.top-header {
+      background-color: black; 
+      padding: 15px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 40px;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      margin-right: 20px;
+      display: inline-block;
+      border-radius: 5px;
+    }
+
+    .navbar .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: black;
+      min-width: 160px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .navbar .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .dropdown-content a {
+      padding: 12px 20px;
+      color: white;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #4b5563;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .container:hover {
+      transform: scale(1.02);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 36px;
+      color: #333;
+      margin-bottom: 30px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .stat-card {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: center;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-card h3 {
+      font-size: 24px;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+
+    .stat-label {
+      font-size: 16px;
+      color: #7e7e7e;
+    }
+
+    #maintenanceAlerts {
+      padding-left: 0;
+      list-style-type: none;
+      margin-top: 20px;
+      transition: all 0.3s ease-in-out;
+    }
+
+    #maintenanceAlerts li {
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-left: 5px solid #dc2626;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    #maintenanceAlerts li:hover {
+      background-color: #f1f3f5;
+      transform: translateX(5px);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: #e0e0e0;
+      border-radius: 10px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 100%;
+      width: 0;
+      background-color: #4CAF50;
+      border-radius: 10px;
+      transition: width 2s ease-in-out;
+    }
+
+    #recentActivity {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 20px;
+    }
+
+    #recentActivity li {
+      background-color: #f8f9fa;
+      border-left: 5px solid #3b82f6;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    #recentActivity li:hover {
+      background-color: #eef2f7;
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 15px;
+    }
+
+    footer {
+      background-color: black;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <script type="module" src="auth-check.js"></script>
+
+<header class="top-header">
+  <div class="logo">
+    <a href="index.html">
+      <img src="images/img2.png" alt="Fleet Management" class="logo-img" />
+    </a>
+  </div>
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <div class="dropdown">
+      <button class="dropbtn">Features</button>
+      <div class="dropdown-content">
+        <a href="maintenance.html">Maintenance Scheduling</a>
+        <a href="route-optimization.html">Route Optimization</a>
+        <a href="analytics.html">Reports and Analytics</a>
+        <a href="fuel.html">Fuel Management System</a>
+       
+        <a href="emergency.html">Emergency Response System</a>
+      </div>
+    </div>
+    <a href="Tracking.html">Tracking</a>
+    <a href="Drivers.html">Drivers</a>
+    <a href="Contact.html">Contact</a>
+    <a href="signout.html" class="nav-btn">Sign out</a>
+  </nav>
+</header>
+
+  <div class="container">
+    <h1>Reports & Analytics</h1>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <img src="images/travel.png" alt="Total Trips" class="stat-icon" />
+        <h3>Total Trips</h3>
+        <p class="stat-value" id="totalTrips">150</p>
+        <p class="stat-label">Total trips completed</p>
+        <div class="progress-bar">
+          <div class="progress" style="width: 75%"></div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <img src="images/route.png" alt="Distance" class="stat-icon" />
+        <h3>Average Distance</h3>
+        <p class="stat-value" id="averageDistance">120.5 km</p>
+        <p class="stat-label">Average distance per trip</p>
+      </div>
+      <div class="stat-card">
+        <img src="images/maintanance.png" alt="Alerts" class="stat-icon" />
+        <h3>Upcoming Maintenance Alerts</h3>
+        <ul id="maintenanceAlerts">
+          <li>Vehicle #101 - Due on 2025-04-20</li>
+          <li>Vehicle #205 - Due on 2025-04-22</li>
+          <li>Vehicle #310 - Due on 2025-04-25</li>
+          <li>Vehicle #401 - Due on 2025-04-30</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>Vehicle Overview</h1>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <img src="images/bike.png" alt="Active" class="stat-icon" />
+        <h3>Active Vehicles</h3>
+        <p class="stat-value">68</p>
+        <p class="stat-label">Currently in operation</p>
+      </div>
+      <div class="stat-card">
+        <img src="images/maintanance.png" alt="Maintenance" class="stat-icon" />
+        <h3>Vehicles in Maintenance</h3>
+        <p class="stat-value">12</p>
+        <p class="stat-label">Under scheduled checks</p>
+      </div>
+      <div class="stat-card">
+        <img src="images/idle-vehicles.jpeg" alt="Idle" class="stat-icon" />
+        <h3>Idle Vehicles</h3>
+        <p class="stat-value">5</p>
+        <p class="stat-label">Not in use currently</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>Recent Activity</h1>
+    <ul id="recentActivity">
+      <li>📍 Vehicle #205 completed delivery to Zone B.</li>
+      <li>🔧 Maintenance started for Vehicle #402.</li>
+      <li>⚠️ Alert: Fuel consumption spike detected in Vehicle #311.</li>
+      <li>🛣️ Route optimization successful for fleet group A.</li>
+      <li>📦 Vehicle #123 picked up cargo from Warehouse 3.</li>
+    </ul>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div>
+        <h2>MOTOMATRIX</h2>
+        <p>Efficient fleet management for smart logistics.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li>Home</li>
+          <li>Features</li>
+          <li>About</li>
+          <li>Contact</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <ul>
+          <li>Help Center</li>
+          <li>FAQs</li>
+          <li>Report Issue</li>
+        </ul>
+      </div>
+      <div class="footer-actions">
+        <h4>Stay Connected</h4>
+        <a href="#">Twitter</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2025 MOTOMATRIX. All rights reserved.
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Route Optimization - MOTOMATRIX</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Leaflet Routing Machine CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background-color: #f5f7fa;
+    }
+
+    .main-header {
+      background-color: white;
+      color: black;
+      text-align: center;
+      padding: 1rem 2rem;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .container {
+      display: flex;
+      padding: 2rem;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+      border-radius: 12px;
+      padding: 1.5rem;
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .details-card {
+      max-width: 400px;
+    }
+
+    .details-card h2 {
+      color: #0d47a1;
+      margin-bottom: 1rem;
+    }
+
+    .detail {
+      margin-bottom: 1rem;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.6rem;
+      font-size: 1rem;
+      margin-top: 0.4rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .optimize-btn {
+      margin-top: 1rem;
+      background-color: #0d47a1;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .optimize-btn:hover {
+      background-color: #1565c0;
+    }
+
+    #map {
+      width: 100%;
+      height: 400px;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <script type="module" src="auth-check.js"></script>
+
+  <!-- TOP NAVBAR -->
+  <header class="top-header">
+    <div class="logo">
+      <a href="index.html">
+        <img src="images/img2.png" alt="Fleet Management" class="logo-img" />
+      </a>
+    </div>
+    
+    <nav class="navbar">
+      <a href="index.html">Home</a>
+      <div class="dropdown">
+        <button class="dropbtn">Features</button>
+        <div class="dropdown-content">
+          <a href="maintenance.html">Maintenance Scheduling</a>
+          <a href="route-optimization.html">Route Optimization</a>
+          <a href="analytics.html">Reports and Analytics</a>
+          <a href="fuel.html">Fuel Management System</a>
+          <a href="emergency.html">Emergency Response System</a>
+        </div>
+      </div>
+      <a href="Tracking.html">Tracking</a>
+      <a href="Drivers.html">Drivers</a>
+      <a href="Contact.html">Contact</a>
+      <a href="signout.html" class="nav-btn">Sign out</a>
+    </nav>
+  </header>
+
+  <!-- PAGE TITLE -->
+  <div class="main-header">Route Optimization</div>
+
+  <div class="container">
+    <!-- Input Form -->
+    <div class="card details-card">
+      <h2>Enter Route Details</h2>
+      <div class="detail">
+        <label for="start">Start Location:</label>
+        <input type="text" id="start" placeholder="e.g., New Delhi" />
+      </div>
+
+      <div class="detail">
+        <label for="end">Destination:</label>
+        <input type="text" id="end" placeholder="e.g., Noida" />
+      </div>
+
+      <button class="optimize-btn" onclick="optimizeRoute()">Optimize Route</button>
+    </div>
+
+    <!-- Map Display -->
+    <div class="card map-card">
+      <div id="map"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div>
+        <h2>MOTOMATRIX</h2>
+        <p>Efficient fleet management for smart logistics.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li>Home</li>
+          <li>Features</li>
+          <li>About</li>
+          <li>Contact</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <ul>
+          <li>Help Center</li>
+          <li>FAQs</li>
+          <li>Report Issue</li>
+        </ul>
+      </div>
+      <div class="footer-actions">
+        <h4>Stay Connected</h4>
+        <a href="#">Twitter</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2025 MOTOMATRIX. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- JS Libraries -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.min.js"></script>
+
+  <!-- Route Optimization Script -->
+  <script>
+    const map = L.map('map').setView([28.6139, 77.2090], 11);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    let control;
+
+    function optimizeRoute() {
+      const start = document.getElementById('start').value;
+      const end = document.getElementById('end').value;
+
+      if (!start || !end) {
+        alert("Please enter both start and destination locations.");
+        return;
+      }
+
+      Promise.all([
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(start)}`).then(res => res.json()),
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(end)}`).then(res => res.json())
+      ]).then(([startResults, endResults]) => {
+        if (!startResults.length || !endResults.length) {
+          alert("Unable to find one or both locations.");
+          return;
+        }
+
+        const startCoords = [parseFloat(startResults[0].lat), parseFloat(startResults[0].lon)];
+        const endCoords = [parseFloat(endResults[0].lat), parseFloat(endResults[0].lon)];
+
+        if (control) map.removeControl(control);
+
+        control = L.Routing.control({
+          waypoints: [
+            L.latLng(...startCoords),
+            L.latLng(...endCoords)
+          ],
+          routeWhileDragging: false
+        }).addTo(map);
+
+        map.setView(startCoords, 13);
+      }).catch(error => {
+        console.error("Routing error:", error);
+        alert("An error occurred while fetching route.");
+      });
+    }
+  </script>
+</body>
+</html>
